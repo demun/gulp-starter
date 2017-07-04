@@ -1,0 +1,3 @@
+이문서는 conditional 입니다.
+
+변수 param 은 "@@param" 입니다.

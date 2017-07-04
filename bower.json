@@ -1,0 +1,24 @@
+{
+  "name": "gulp-bower",
+  "version": "0.0.0",
+  "authors": [
+    "demun <hjm01@naver.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "fontawesome": "latest",
+    "bxslider-4": "latest",
+    "swiper": "latest",
+    "bootstrap": "^3.3.7"
+  },
+  "devDependencies": {
+    "bootstrap-sass": "^3.3.7"
+  }
+}
