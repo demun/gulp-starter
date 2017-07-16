@@ -27,7 +27,7 @@
 `nodejs` 가 설치되어 있어야 합니다.
 
 ```sh
-npm i # npm install && bower install
+npm install
 ```
 
 또는 `yarn` 이 설치되어 있는 경우
