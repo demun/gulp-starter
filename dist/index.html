@@ -1,10 +1,34 @@
 <!DOCTYPE html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <!-- #DNS prefetching -->
+    <!-- http://csswizardry.com/2013/01/front-end-performance-for-web-designers-and-front-end-developers -->
+    <link rel="dns-prefetch" href="//ajax.googleapis.com">
+    <link rel="dns-prefetch" href="//use.typekit.net">
+    <link rel="dns-prefetch" href="//google-analytics.com">
+    <!-- #Asset Prefetching -->
+    <!-- Fetch and Download Assets before requested by the user  -->
+    <!-- http://csswizardry.com/2013/01/front-end-performance-for-web-designers-and-front-end-developers/#section:resource-prefetching -->
+    <link rel="prefetch" href="">
+    <!-- #Page Prefetching -->
+    <!-- http://calendar.perfplanet.com/2012/speed-up-your-site-using-prefetching -->
+    <link rel="prefetch" href="index.html">
+    <!-- #Typekit -->
+    <title>mainpage</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="robots" content="all">
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, user-scalable=1, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- Place favicon.ico and apple-touch-icon(s) in the root directory -->
+    <!-- http://mathiasbynens.be/notes/rel-shortcut-icon -->
+    <!-- http://mathiasbynens.be/notes/touch-icons -->
+    <link rel="icon" type="images/ico" href="favicon.ico">
+    <link rel="icon" type="images/png" href="favicon.png">
+    <!-- CSS, you gotta have style -->
     <link rel="stylesheet" href="./css/vendors.min.css" />
     <link rel="stylesheet" href="./css/style.min.css" />
     <title>mainpage</title>
@@ -12,8 +36,16 @@
   <body>
     <div class="container">
       <div class="row">
-        <div>김수한무 거북이와 두루미 삼천갑자 동방서 칙칙카포 사리사리센터 워리워리 세브리카 김수한무 거북이와 두루미 삼천갑자 동방서 칙칙카포 사리사리센타 김수한무 거북이와 두루미참선갑자동방서 칙칙카포 사리사리센터</div>
-        <h1>Category</h1>
+        <div class="page-header">
+          <h1>Wells</h1>
+        </div>
+        <div class="well">
+          <p>이 페이지는 첫페이지 입니다.</p>
+          <p>이 페이지는 첫페이지 입니다.</p>
+        </div>
+        <div class="page-header">
+          <h1>Category</h1>
+        </div>
         <ul>
           <li>
             <a href="html/sub1/sub1.html" target="_blank">sub1/sub1.html</a>
@@ -22,7 +54,9 @@
             <a href="html/sub1/sub2.html" target="_blank">sub2/sub1.html</a>
           </li>
         </ul>
-        <h1>plugins examples</h1>
+        <div class="page-header">
+          <h1>plugins examples</h1>
+        </div>
         <ul>
           <li>
             <a href="html/examples/bootstrap.html" target="_blank">bootstrap.html</a>
@@ -37,10 +71,14 @@
             <a href="html/examples/swiper.html" target="_blank">swiper.html</a>
           </li>
         </ul>
-        <h1>file include</h1>
+        <div class="page-header">
+          <h1>file include</h1>
+        </div>
         <h2>in1</h2>
         <h2>in2</h2>
-        <h1>data include</h1> 이문서는 conditional 입니다. 변수 param 은 "success" 입니다. </div>
+        <div class="page-header">
+          <h1>data include</h1>
+        </div> 이문서는 conditional 입니다. 변수 param 은 "success" 입니다. </div>
     </div>
   </body>
 </html>

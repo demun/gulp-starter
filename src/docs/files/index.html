@@ -9,8 +9,17 @@
 
 <div class="container">
   <div class="row">
-    <div>김수한무 거북이와 두루미 삼천갑자 동방서 칙칙카포 사리사리센터 워리워리 세브리카 김수한무 거북이와 두루미 삼천갑자 동방서 칙칙카포 사리사리센타 김수한무 거북이와 두루미참선갑자동방서 칙칙카포 사리사리센터</div>
-    <h1>Category</h1>
+    <div class="page-header">
+      <h1>Wells</h1>
+    </div>
+    <div class="well">
+      <p>이 페이지는 첫페이지 입니다.</p>
+      <p>이 페이지는 첫페이지 입니다.</p>
+    </div>
+
+    <div class="page-header">
+      <h1>Category</h1>
+    </div>
     <ul>
       <li>
         <a href="html/sub1/sub1.html" target="_blank">sub1/sub1.html</a>
@@ -19,7 +28,10 @@
         <a href="html/sub1/sub2.html" target="_blank">sub2/sub1.html</a>
       </li>
     </ul>
-    <h1>plugins examples</h1>
+    
+    <div class="page-header">
+      <h1>plugins examples</h1>
+    </div>
     <ul>
       <li><a href="html/examples/bootstrap.html" target="_blank">bootstrap.html</a></li>
       <li><a href="html/examples/bxslider.html" target="_blank">bxslider.html</a></li>
@@ -27,12 +39,16 @@
       <li><a href="html/examples/swiper.html" target="_blank">swiper.html</a></li>
     </ul>
 
-    <h1>file include</h1>
+    <div class="page-header">
+      <h1>file include</h1>
+    </div>
     @@include('../includes/in1.html') 
     
     @@include('../includes/in2.html')
 
-    <h1>data include</h1>
+    <div class="page-header">
+      <h1>data include</h1>
+    </div>
     @@if (context.name === 'example') { @@include('../includes/conditional.txt', { "param": "success" }) }
   </div>
 </div>

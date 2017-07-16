@@ -1,6 +1,6 @@
 {
-  "name": "gulp-bower",
-  "version": "0.0.0",
+  "name": "gulp-starter",
+  "version": "0.0.1",
   "authors": [
     "demun <hjm01@naver.com>"
   ],
@@ -16,9 +16,7 @@
     "fontawesome": "latest",
     "bxslider-4": "latest",
     "swiper": "latest",
-    "bootstrap": "^3.3.7"
-  },
-  "devDependencies": {
-    "bootstrap-sass": "^3.3.7"
+    "bootstrap": "^3.3.7",
+    "jquery": "1.12.4"
   }
 }

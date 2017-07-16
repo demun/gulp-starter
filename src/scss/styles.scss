@@ -1,0 +1,47 @@
+@charset 'UTF-8';
+// https://sass-guidelin.es/ko/#section-51
+
+// 1. Configuration and helpers
+// 전역 변수, 함수, 믹스인, 플레이스홀더는 여기로 들어가야 합니다.
+// 이 폴더에 대한 경험적 법칙은 그 자체만으로는 컴파일되었을 때 한 줄의 CSS도 산출하지 않아야 한다는 것입니다. 이것은 그저 Sass 헬퍼일 뿐입니다.
+@import
+  'utils/variables',
+  'utils/functions',
+  'utils/mixins',
+  'utils/helpers';
+
+// 2. Vendors
+@import
+  'vendor/normalize';
+
+// 3. Base stuff
+// 리셋 파일, 타이포그래피 규칙, 그리고 아마도 자주 사용되는 HTML 요소에 대한 표준 스타일을 정의하는 스타일시트
+@import
+  'base/base',
+  'base/fonts',
+  'base/typography';
+  
+// 4. Layout-related sections
+// 사이트의 주요 부분(header, footer, navigation, sidebar…), 그리드 시스템 혹은 모든 폼의 스타일을 위한 스타일시트를 가질 수도 있습니다.
+@import
+  'layout/header',
+  'layout/sidebar',
+  'layout/footer';
+
+// 5. Components
+// 슬라이더, 로더, 위젯, 그리고 기본적으로 이들과 비슷한 것을 비롯해 온갖 구체적인 모듈들을 담습니다. 
+@import
+  'components/carousel',
+  'components/dropdown',
+  'components/button';
+
+// 6. Page-specific styles
+// 만약 페이지에 한정된 스타일이 있다면, 그것은 pages/ 폴더 속, 페이지 이름을 딴 파일에 넣는 것이 좋습니다. 예를 들면, 홈페이지에만 한정된 스타일이 있어 pages/ 폴더 속 _home.scss 파일이 필요해지는 것은 드문 일이 아닙니다.
+@import
+  'pages/contact',
+  'pages/home';
+
+// 7. Themes
+@import
+  'themes/admin',
+  'themes/default';

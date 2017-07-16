@@ -1,4 +1,16 @@
-var gulp         = require('gulp');
+var gulp        = require('gulp'),
+    size        = require('gulp-size'),
+    plumber     = require('gulp-plumber'),
+    notify      = require('gulp-notify'),
+    del         = require('del'),
+    vinylPaths  = require('vinyl-paths'),
+    // Temporary solution until gulp 4
+    // https://github.com/gulpjs/gulp/issues/355
+    runSequence = require('run-sequence');
+
+// html
+var fileinclude  = require('gulp-file-include');
+var prettify     = require('gulp-prettify');
 
 // js
 var jshint       = require("gulp-jshint");
@@ -11,26 +23,16 @@ var autoprefixer = require('gulp-autoprefixer');
 var cleanCSS     = require('gulp-clean-css');
 var sourcemaps   = require('gulp-sourcemaps');
 var rename       = require("gulp-rename");
-
-// html
-var fileinclude  = require('gulp-file-include');
-var prettify     = require('gulp-prettify');
+// sassLint
+var sassLint     = require('gulp-sass-lint');
 
 // image
 var imagemin     = require('gulp-imagemin');
-var cache        = require('gulp-cache');
+var pngquant     = require('imagemin-pngquant');
 
 // 서버
 var browserSync  = require('browser-sync');
 var reload       = browserSync.reload;
-
-// bower
-var gulpCopy     = require('gulp-copy');
-
-// others
-var del          = require('del');
-var runSequence  = require('run-sequence');
-var plumber      = require('gulp-plumber');
 
 
 
@@ -45,20 +47,23 @@ var plumberOption = {
 }
 
 
-// 환경설정
-// ----------------------------------------------
-var config = {
-  src: 'src',
-  dist: 'dist',
-  allfile: '**/*'
-}
-
-
-
-// task
+// BUILD SUBTASKS
 // ----------------------------------------------
 
-// js task
+gulp.task('clean:dist', function() {
+  return gulp.src('dist')
+    .pipe(vinylPaths(del));
+});
+
+gulp.task('sass-lint', function() {
+  gulp.src(['src/scss/**/*.scss', '!src/scss/vendor/*.scss'])
+    .pipe(sassLint({ configFile: '.sass-lint.yml'}))
+    .pipe(sassLint.format())
+    .pipe(sassLint.failOnError());
+});
+
+
+
 // main js
 gulp.task('js:main', function() {
   return gulp
@@ -76,23 +81,25 @@ gulp.task('js:main', function() {
     .pipe(reload({ stream: true }));  //browserSync 로 브라우저에 반영
 });
 
-// scss
 gulp.task('scss', function() {
-  return gulp
-    .src('src/scss/**/*.scss')        //scss 폴더에 .scss 파일을 찾아서
-    .pipe(plumber(plumberOption))     // 빌드 과정에서 오류 발생시 gulp가 죽지않도록 예외처리
-    .pipe(sourcemaps.init({ loadMaps: true, debug: true }))   //소스맵 생성 준비
-    .pipe(sass({ outputStyle: 'expanded' }))    // sass 파일을 css 로 변환하고
-    .pipe(autoprefixer({ browsers: ['last 2 versions'], cascade: false }))  // 벤터프리픽스를 붙이고
+  return gulp.src('src/scss/styles.scss')
+    .pipe(plumber(plumberOption))
+    .pipe(sourcemaps.init())
+    .pipe(sass({ outputStyle: 'expanded' })) // expanded, compact
+    .pipe(size({ gzip: true, showFiles: true }))
+    .pipe(autoprefixer({ browsers: ['last 2 versions'], cascade: false }))
+    .pipe(rename('styles.css'))
     .pipe(gulp.dest('dist/css'))
-    .pipe(cleanCSS({ keepSpecialComments: 0 }))   // minify 해서
-    // .pipe(concat('main.css'))      // main.css 라는 파일로 합치고
+    .pipe(reload({stream:true}))
+    .pipe(cleanCSS({debug: true}, function(details) {
+      console.log(details.name + ': ' + details.stats.originalSize);
+      console.log(details.name + ': ' + details.stats.minifiedSize);
+    }))
+    .pipe(size({ gzip: true, showFiles: true }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(sourcemaps.write('./'))     //생성된 소스맵을 스트림에 추가
-    .pipe(gulp.dest('dist/css'))      //dist 폴더에 저장
-    .pipe(reload({ stream: true }));  //browserSync 로 브라우저에 반영
+    .pipe(gulp.dest('dist/css'))
 });
-
 
 // html
 gulp.task('html', function() {
@@ -110,22 +117,34 @@ gulp.task('html', function() {
     .pipe(reload({ stream: true }));
 });
 
+//dist 폴더를 기준으로 웹서버 실행
+gulp.task('browser-sync', function() {
+  browserSync({
+    server: {
+      baseDir: 'dist',
+      index: 'index.html'
+    }
+  });
+});
 
-// images
-gulp.task('imagemin', function() {
-  return gulp
-    .src('src/images/**/*')
-    // .pipe(imagemin())
-    .pipe(cache(imagemin()))
-    .pipe(gulp.dest('dist/images'));
+gulp.task('deploy', function() {
+  return gulp.src('dist')
+    .pipe(deploy());
 });
 
 
-
+gulp.task('imagemin', function() {
+  return gulp.src('src/images/**/*')
+    .pipe(imagemin({
+      progressive: true,
+      svgoPlugins: [{removeViewBox: false}],
+      use: [pngquant()]
+    }))
+    .pipe(gulp.dest('dist/images'));
+});
 
 // bower task: js, css, fonts, images
 // -------------------------------------------------------------------
-
 // js copy
 gulp.task('copy:js', function() {
   var allFile = [
@@ -184,58 +203,32 @@ gulp.task('copy:images', function() {
 
 
 
+// watch
+// -------------------------------------------------------------------
 
-
-//dist 폴더를 기준으로 웹서버 실행
-gulp.task('server', function() {
-  return browserSync.init({
-    server: {
-      baseDir: 'dist',
-      index: 'index.html'
-    }
-  });
-});
-
-
-
-
-// 파일 변경 감지
 gulp.task('watch', function() {
   gulp.watch('src/js/**/*.js', ['js:main', 'copy:js']);
   gulp.watch('src/scss/**/*.scss', ['scss', 'copy:css']);
   gulp.watch('src/docs/**/*.html', ['html']);
-  gulp.watch('src/images/**/*', ['imagemin', 'copy:images']);
-  gulp.watch('src/images/**/*', ['copy:fonts']);
+  gulp.watch('src/images/**/*', ['imagemin', 'copy:images','copy:fonts']);
 });
 
 
-// 폴더 삭제
-gulp.task('clean', del.bind(null, ['dist']));
 
 
-
-// 빌드
-// ----------------------------------------------
-
-gulp.task('js', ['js:main']);
-gulp.task('css', ['scss']);
+// BUILD TASKS
+// -------------------------------------------------------------------
 gulp.task('copy', ['copy:js', 'copy:css', 'copy:fonts', 'copy:images']);
 
-gulp.task('serve:dist', ['server', 'watch']);
 
-// default 를 수행한후 server,watch 실행
 gulp.task('serve', function(done) {
-  return runSequence('default', ['server', 'watch'], done);
+  runSequence('browser-sync', 'watch', done);
 });
 
-gulp.task('build', ['js', 'css', 'html', 'imagemin', 'copy']);
-
-// gulp 를 실행하면 defatul 작업실행, clean 작업을 수행한뒤 
 gulp.task('default', function(done) {
-  return runSequence('clean', ['build'], done);
+  runSequence('clean:dist', 'browser-sync', 'js:main', 'imagemin', 'scss', 'copy','html', 'watch', done);
 });
-// //gulp를 실행하면 수행할 default 작업
-// gulp.task('default', function(done) {
-//   //빌드(js, scss, html)를 병렬로 수행한 뒤, 그 다음 server 와 watch 를 병렬로 수행
-//   return runSequence('build', ['server', 'watch'], done);
-// });
+
+gulp.task('build', function(done) {
+  runSequence('clean:dist', 'js:main', 'imagemin', 'scss', 'copy','html', done);
+});
