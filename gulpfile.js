@@ -1,5 +1,4 @@
 var gulp        = require('gulp'),
-    size        = require('gulp-size'),
     plumber     = require('gulp-plumber'),
     notify      = require('gulp-notify'),
     del         = require('del'),
@@ -20,7 +19,7 @@ var concat       = require('gulp-concat');
 // css
 var sass         = require('gulp-sass');
 var autoprefixer = require('gulp-autoprefixer');
-var cleanCSS     = require('gulp-clean-css');
+var minifycss = require('gulp-minify-css');
 var sourcemaps   = require('gulp-sourcemaps');
 var rename       = require("gulp-rename");
 // sassLint
@@ -75,7 +74,7 @@ gulp.task('sass-lint', function() {
 // main js
 gulp.task('js:main', function() {
   return gulp
-    .src(config.src + '/js/**/*.js')            // src/js 폴더 아래의 모든 js 파일을
+    .src(config.src + '/js/**/*.js')  // src/js 폴더 아래의 모든 js 파일을
     .pipe(plumber(plumberOption))     // 빌드 과정에서 오류 발생시 gulp가 죽지않도록 예외처리
     .pipe(jshint('.jshintrc'))        // 오류구문 검사
     .pipe(jshint.reporter('jshint-stylish'))    // 검사오류시 스타일 적용해서 콘솔에 보여주고
@@ -89,24 +88,20 @@ gulp.task('js:main', function() {
     .pipe(reload({ stream: true }));  //browserSync 로 브라우저에 반영
 });
 
-gulp.task('scss', function() {
-  return gulp.src(config.src + '/scss/styles.scss')
+
+gulp.task('scss', function () {
+  return gulp.src(config.src + '/scss/**/*.scss')
     .pipe(plumber(plumberOption))
     .pipe(sourcemaps.init())
-    .pipe(sass({ outputStyle: 'expanded' })) // expanded, compact
-    .pipe(size({ gzip: true, showFiles: true }))
-    .pipe(autoprefixer({ browsers: ['last 2 versions'], cascade: false }))
-    .pipe(rename('styles.css'))
+    .pipe(sass({ outputStyle: 'compact' })) // expanded, compact
+    .pipe(autoprefixer())
     .pipe(gulp.dest(config.dist + '/css'))
-    .pipe(reload({stream:true}))
-    .pipe(cleanCSS({debug: true}, function(details) {
-      console.log(details.name + ': ' + details.stats.originalSize);
-      console.log(details.name + ': ' + details.stats.minifiedSize);
-    }))
-    .pipe(size({ gzip: true, showFiles: true }))
+    .pipe(minifycss())
     .pipe(rename({ suffix: '.min' }))
+    // .pipe(concat('style.min.css'))
     .pipe(sourcemaps.write('./'))     //생성된 소스맵을 스트림에 추가
     .pipe(gulp.dest(config.dist + '/css'))
+    .pipe(reload({stream:true}))
 });
 
 // html
@@ -185,7 +180,7 @@ gulp.task('copy:css', function() {
     .pipe(concat('vendors.css'))
     .pipe(gulp.dest(config.dist + '/css'))
     .pipe(rename({ suffix: '.min' }))
-    .pipe(cleanCSS({ keepSpecialComments: 0 }))
+    .pipe(minifycss())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(config.dist + '/css'));
 });
